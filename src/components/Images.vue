@@ -18,7 +18,7 @@
             <p class="control">
                 <label for="files"
                     class="button"
-                    :class="{ 'is-primary': dropped, 'is-disabled': dropped, 'is-loading': dropped }">
+                    :class="{ 'is-primary': isProcessing, 'is-disabled': isProcessing, 'is-loading': isProcessing }">
                         Add new images
                 </label>
                 or drop files in the browser
@@ -60,9 +60,10 @@
             :callback="setPage">
         </pagination>
 
-<!-- <pre>
-{{dropped|json}}
-</pre> -->
+<pre>
+{{ queue|json }}
+{{ isProcessing|json }}
+</pre>
 
     </div>
 </template>
@@ -84,13 +85,12 @@ export default {
     data: function () {
         return {
             dragged: false,
-            dropped: false
+            queue: []
         }
     },
     watch: {
         'images': function (val, oldVal) {
             // console.log('new: %s, old: %s', val, oldVal)
-            this.dropped = false
             this.initGrid()
         }
     },
@@ -109,6 +109,13 @@ export default {
         mixinPagination
     ],
     computed: {
+        isProcessing() {
+            if (this.queue.length > 0) {
+                return true
+            } else {
+                return false
+            }
+        },
         totalEntries() {
             return this.lokiImages.idIndex.length
         },
@@ -138,12 +145,15 @@ export default {
         dropFile(event, resize, save) {
             event.preventDefault()
             this.dragged = false
-            this.dropped = true
+            var queue = this.queue
             var files = [].slice.call(event.target.files || event.dataTransfer.files)
                 files.forEach(function (file) {
+                    var filename = file.name
+                    queue.push(filename)
+                    console.log(filename + " pushed to queue");
                     var reader = new FileReader()
                     reader.onload = function(event) {
-                        fileLoaded(file.name, event.currentTarget.result);
+                        fileLoaded(filename, event.currentTarget.result);
                     }
                     reader.readAsDataURL(file)
                 })
@@ -171,6 +181,8 @@ export default {
                 });
         },
         saveFile(filename, dataUri) {
+            this.queue = _.without(this.queue, filename)
+            console.log(filename + " removed from queue");
             this.pagination.currentPage = 1
             var image = {"name": filename, "data": dataUri}
             this.saveImageItem(image)

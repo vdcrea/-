@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import VueI18n from 'vue-i18n'
+import _ from 'lodash'
 
 import router from './router'
 import store from './vuex/store'
