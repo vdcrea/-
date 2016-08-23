@@ -16,9 +16,14 @@
   },
   "dependencies": {
     "babel-runtime": "^6.0.0",
+    "clipboard": "^1.5.12",
+    "drop-file-dataurl": "0.0.0",
+    "freewall": "^1.0.8",
     "jimp": "^0.2.27",
+    "jquery": "^3.1.0",
     "lokijs": "^1.4.1",
     "moment": "^2.14.1",
+    "svg2pdf.js": "^0.11.3",
     "vue": "^1.0.21",
     "vue-i18n": "^4.2.2",
     "vue-router": "^0.7.13"

@@ -1,38 +1,60 @@
 <template>
-  <div id="app">
-    <img class="logo" src="./assets/logo.png">
-    <hello></hello>
-    <p>
-      Welcome to your Vue.js app!
-    </p>
-    <p>
-      To get a better understanding of how this boilerplate works, check out
-      <a href="http://vuejs-templates.github.io/webpack" target="_blank">its documentation</a>.
-      It is also recommended to go through the docs for
-      <a href="http://webpack.github.io/" target="_blank">Webpack</a> and
-      <a href="http://vuejs.github.io/vue-loader/" target="_blank">vue-loader</a>.
-      If you have any issues with the setup, please file an issue at this boilerplate's
-      <a href="https://github.com/vuejs-templates/webpack" target="_blank">repository</a>.
-    </p>
-    <p>
-      You may also want to checkout
-      <a href="https://github.com/vuejs/vue-router/" target="_blank">vue-router</a> for routing and
-      <a href="https://github.com/vuejs/vuex/" target="_blank">vuex</a> for state management.
-    </p>
-  </div>
+    <div id="app">
+        <div v-if="dbLoaded">
+            <nav-bar></nav-bar>
+            <div id="app">
+            <router-view class="view"
+                transition="view"
+                transition-mode="out-in">
+            </router-view>
+        </div>
+    </div>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import NavBar from './partials/NavBar'
+import {
+    setLang
+} from './vuex/actions'
 
 export default {
-  components: {
-    Hello
-  }
+    vuex: {
+        actions: {
+            setLang: setLang
+        },
+        getters: {
+            settings: state => state.settings,
+            dbLoaded: state => state.dbLoaded
+        }
+    },
+    components: {
+        NavBar
+    },
+    methods: {
+        getLang() {
+            var localStorageLang = localStorage.getItem('lang')
+            if (localStorageLang) {
+                this.setLang(localStorageLang)
+            } else {
+                var browserLang = window.navigator.userLanguage || window.navigator.language // Get language
+                browserLang = browserLang.substring( 0, 2 ) // Get primary standard
+                if (this.settings.locales.indexOf(browserLang) !== -1
+                && this.settings.lang != browserLang) {
+                    this.setLang(browserLang)
+                }
+            }
+        }
+    },
+    created() {
+        this.getLang()
+    }
 }
 </script>
 
-<style>
+<style lang="scss">
+@import 'assets/bulma';
+@import 'assets/icons/fontello/css/brandguidelight';
+
 html {
   height: 100%;
 }
@@ -45,20 +67,55 @@ body {
 }
 
 #app {
-  color: #2c3e50;
-  margin-top: -100px;
-  max-width: 600px;
-  font-family: Source Sans Pro, Helvetica, sans-serif;
-  text-align: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+    a, input, button {
+        transition: all .2s ease-in-out;
+    }
 }
 
-#app a {
-  color: #42b983;
-  text-decoration: none;
+pre {
+    background:#000;
+    color:#FFF;
+    font-family: monospace;
+    padding: 20px;
+    margin: 0;
+    text-align: left;
 }
 
-.logo {
-  width: 100px;
-  height: 100px
+.padding {
+    padding: 20px;
+    &-v {
+        padding: 20px 0;
+    }
+    &-s {
+        padding: 10px;
+    }
 }
+
+.brick {
+    width: 200px;
+}
+
+.view {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    &-transition {
+        transition: all .3s ease-in-out;
+    }
+    &-enter, &-leave {
+        opacity: 0;
+        transform: translateY(100px);
+    }
+}
+
 </style>
