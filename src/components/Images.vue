@@ -19,9 +19,9 @@
                 <label for="files"
                     class="button"
                     :class="{ 'is-primary': isProcessing, 'is-disabled': isProcessing, 'is-loading': isProcessing }">
-                        Add new images
+                        {{ 'images.addNewImages' | translate }}
                 </label>
-                or drop files in the browser
+                {{ 'images.dropFiles' | translate }}
             </p>
         </div>
         <div class="padding-v">
@@ -59,11 +59,6 @@
             :total-pages="totalPages"
             :callback="setPage">
         </pagination>
-
-<pre>
-{{ queue|json }}
-{{ isProcessing|json }}
-</pre>
 
     </div>
 </template>
@@ -171,7 +166,7 @@ export default {
             var imgBuffer = new Buffer(data,'base64')
 
             Jimp.read(imgBuffer, function (err, image) {
-                image.scaleToFit(1200,800)
+                image.scaleToFit(1480,1480)
                     .quality(80)
                     .getBase64(mimeType, function (err, dataUri) {
                         save(filename, dataUri)

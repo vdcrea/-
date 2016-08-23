@@ -3,10 +3,8 @@ export default {
         state.user = userInfo
     },
     SET_LANG (state, lang) {
-        if (state.settings.locales.indexOf(lang) !== -1) {
-            localStorage.setItem('lang', lang)
-            state.settings.lang = lang
-        }
+        localStorage.setItem('lang', lang)
+        state.settings.lang = lang
     },
 
     SAVE_LOGO(state, newitem) {

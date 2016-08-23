@@ -8,6 +8,7 @@ Vue.use(VueRouter)
 import Home from './components/Home'
 import Documents from './components/Documents'
 import Images from './components/Images'
+import Settings from './components/Settings'
 
 // Router options
 var router = new VueRouter({
@@ -22,9 +23,17 @@ router.map({
 		name: 'Documents',
 		component: Documents
     },
+    // '/images/:page': {
+	// 	name: 'Images',
+	// 	component: Images
+    // },
     '/images': {
-		name: 'Images',
-		component: Images
+    	name: 'Images',
+    	component: Images
+    },    
+    '/settings': {
+		name: 'Settings',
+		component: Settings
     },
     '*': {
         component: Documents

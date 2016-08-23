@@ -24,10 +24,20 @@
                 @click="closeMenu()">
                 {{ 'nav.documents' | translate }}
             </a>
+            <!-- <a  class="nav-item is-tab"
+                v-link="{ name: 'Images', params: { page: 1 } }"
+                @click="closeMenu()">
+                {{ 'nav.images' | translate }}
+            </a> -->
             <a  class="nav-item is-tab"
                 v-link="{ name: 'Images' }"
                 @click="closeMenu()">
                 {{ 'nav.images' | translate }}
+            </a>
+            <a  class="nav-item is-tab"
+                v-link="{ name: 'Settings' }"
+                @click="closeMenu()">
+                {{ 'nav.settings' | translate }}
             </a>
         </div>
 

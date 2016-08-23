@@ -12,7 +12,10 @@ const state = {
     dbLoaded: false,
     settings: {
         lang: 'en',
-        locales: ['en', 'fr'],
+        locales: [
+            { value: 'en', text: 'English' },
+            { value: 'fr', text: 'Français' }
+        ],
     },
     brand: {
         colors: {},
