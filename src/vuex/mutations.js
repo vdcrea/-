@@ -26,6 +26,7 @@ export default {
         state.brand.logos.remove(item);
     },
 
+
     SAVE_COLOR(state, newitem) {
         state.brand.colors.insert(newitem)
     },
@@ -50,8 +51,8 @@ export default {
             item = newitem
         state.images.update(item);
     },
-    REMOVE_IMAGE(state, id) {
-        var item = state.images.findOne({"$loki":id});
+    REMOVE_IMAGE(state, file) {
+        var item = state.images.find({'file': file})
         state.images.remove(item);
     }
 

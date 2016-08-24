@@ -105,6 +105,9 @@ pre {
     &-s {
         padding: 10px;
     }
+    &-top {
+        padding: 10px 0 0 0;
+    }
 }
 
 .brick {
@@ -128,4 +131,17 @@ pre {
     }
 }
 
+.alert {
+    &-transition {
+        position: relative;
+        transition: all .5s ease-in-out;
+    }
+    &-enter {
+        transform: translateY(50px);
+        opacity: 0;
+    }
+    &-leave {
+        opacity: 0;
+    }
+}
 </style>

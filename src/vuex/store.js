@@ -19,6 +19,7 @@ const state = {
         ],
     },
     // persistant collections
+    logos: {},
     colors: {},
     images: {}
 }
@@ -40,14 +41,22 @@ var db = new loki('miniscrib',{
 })
 function loadHandler () {
     // get collections
+    var logos = db.getCollection('logos');
     var colors = db.getCollection('colors');
     var images = db.getCollection('images');
     // if collections doesn't exist, create it
+    if (logos === null) {
+        logos = db.addCollection('logos', {
+            unique: ['name']
+        });
+    }
     if (colors === null) {
         colors = db.addCollection('colors');
     }
     if (images === null) {
-        images = db.addCollection('images');
+        images = db.addCollection('images', {
+            unique: ['name']
+        });
     }
     // add collections to the state
     state.colors = colors
@@ -55,7 +64,7 @@ function loadHandler () {
     state.dbLoaded = true
 
     // debug: reset database at every reload
-    //images.removeDataOnly()
+    // images.removeDataOnly()
 }
 window.onbeforeunload = function() {
     db.close()

@@ -6,7 +6,8 @@ export default {
         "yourBrand": "Your brand's name",
         "next": "Next",
         "anotherBrand": "is another brand",
-        "saveYourLogo": "Save your logo",
+        "selectYourLogo": "Select your logo",
+        "logoFormat": ".jpg or .png file over white",
         "describeYourBrand": "Describe your brand"
     },
     "nav": {
@@ -16,6 +17,7 @@ export default {
     },
     "images": {
         "addNewImages": "Add new images",
+        "testFile": ": this picture is already saved",
         "dropFiles": "or drop files in the browser"
     },
     "settings": {

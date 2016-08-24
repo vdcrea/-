@@ -4,7 +4,7 @@
         @dragover.prevent="dragStart"
         @dragend.prevent="dragEnd"
         @dragleave.prevent="dragEnd"
-        @drop="dropFile($event, readFile, saveFile)">
+        @drop="dropFile($event, testFile, readFile, saveFile)">
 
         <!-- :class="{ 'dragged': dragged }" -->
 
@@ -13,7 +13,7 @@
                     name="files[]"
                     id="files"
                     v-el:new-brand-image
-                    @change="dropFile($event, readFile, saveFile)"
+                    @change="dropFile($event, testFile, readFile, saveFile)"
                     multiple />
             <p class="control">
                 <label for="files"
@@ -24,7 +24,17 @@
                 {{ 'images.dropFiles' | translate }}
             </p>
         </div>
+
         <div class="padding-v">
+            <div v-for="alert in messages"
+                class="notification"
+                :class="alert.class"
+                transition="alert"
+                stagger="200">
+                <button class="delete"
+                    @click="closeAlert($index)"></button>
+                <span v-text="alert.message"></span>
+            </div>
             <div class="wall">
                 <div v-for="image in images"
                     class="brick">
@@ -82,7 +92,8 @@ export default {
     data: function () {
         return {
             dragged: false,
-            queue: []
+            queue: [],
+            messages: []
         }
     },
     watch: {
@@ -135,31 +146,52 @@ export default {
         imageCard
     },
     events: {
-        'delete-image': function (lokiId) {
-            this.removeImageItem(lokiId)
+        'delete-image': function (file) {
+            this.removeImageItem(file)
         }
     },
     methods: {
+        closeAlert(i) {
+            this.messages.splice(i,1);
+        },
         dragStart() {
             this.dragged = true
         },
         dragEnd() {
             this.dragged = false
         },
-        dropFile(event, resize, save) {
+        testFile(file) {
+            var image = this.lokiImages.findOne({'file': file})
+            if (image) {
+                return true
+            } else {
+                return false
+            }
+        },
+        dropFile(event, test, resize, save) {
             event.preventDefault()
             this.dragged = false
             var queue = this.queue
+            var messages = this.messages
+            var errorMsg = this.$t('images.testFile', this.$store.state.settings.lang)
+
             var files = [].slice.call(event.target.files || event.dataTransfer.files)
                 files.forEach(function (file) {
                     var filename = file.name
-                    queue.push(filename)
-                    console.log(filename + " pushed to queue");
-                    var reader = new FileReader()
-                    reader.onload = function(event) {
-                        fileLoaded(filename, event.currentTarget.result);
+                    if (!test(filename)) {
+                        queue.push(filename)
+                        var reader = new FileReader()
+                        reader.onload = function(event) {
+                            fileLoaded(filename, event.currentTarget.result);
+                        }
+                        reader.readAsDataURL(file)
+                    } else {
+                        var message = {
+                            'message': filename + errorMsg,
+                            'class': 'is-danger'
+                        }
+                        messages.push(message)
                     }
-                    reader.readAsDataURL(file)
                 })
             function fileLoaded(filename, dataUri) {
                 if(/^data:image/.test(dataUri)) {
@@ -186,9 +218,8 @@ export default {
         },
         saveFile(filename, dataUri) {
             this.queue = _.without(this.queue, filename)
-            console.log(filename + " removed from queue");
             this.pagination.currentPage = 1
-            var image = {"name": filename, "data": dataUri}
+            var image = {"file": filename, "data": dataUri}
             this.saveImageItem(image)
         },
         initGrid() {

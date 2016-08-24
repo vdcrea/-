@@ -31,8 +31,9 @@ router.map({
     },
     '/images': {
     	name: 'Images',
-    	component: Images,
-        brand: true
+    	component: Images
+		//,
+        // brand: true
     },
     '/settings': {
 		name: 'Settings',
