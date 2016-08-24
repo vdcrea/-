@@ -1,4 +1,4 @@
-<template lang="html">
+<template>
     <div class="documents padding">
         <div class="wall">
             <div v-for="doc in docs"

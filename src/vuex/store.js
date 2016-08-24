@@ -11,16 +11,16 @@ Vue.use(Vuex)
 const state = {
     dbLoaded: false,
     settings: {
+        currentBrand: '',
         lang: 'en',
         locales: [
             { value: 'en', text: 'English' },
             { value: 'fr', text: 'Français' }
         ],
     },
-    brand: {
-        colors: {},
-        images: {}
-    }
+    // persistant collections
+    colors: {},
+    images: {}
 }
 
 const store = new Vuex.Store({
@@ -50,8 +50,8 @@ function loadHandler () {
         images = db.addCollection('images');
     }
     // add collections to the state
-    state.brand.colors = colors
-    state.brand.images = images
+    state.colors = colors
+    state.images = images
     state.dbLoaded = true
 
     // debug: reset database at every reload

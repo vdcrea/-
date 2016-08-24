@@ -1,5 +1,6 @@
 export const setUser = makeAction('SET_USER')
 export const setLang = makeAction('SET_LANG')
+export const setBrand = makeAction('SET_BRAND')
 
 // brand actions
 export const saveLogoItem = makeAction('SAVE_LOGO')

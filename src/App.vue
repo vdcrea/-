@@ -14,13 +14,15 @@
 <script>
 import NavBar from './partials/NavBar'
 import {
-    setLang
+    setLang,
+    setBrand
 } from './vuex/actions'
 
 export default {
     vuex: {
         actions: {
-            setLang: setLang
+            setLang: setLang,
+            setBrand: setBrand
         },
         getters: {
             settings: state => state.settings,
@@ -31,6 +33,14 @@ export default {
         NavBar
     },
     methods: {
+        getCurrentBrand() {
+            var localStorageCurrentBrand = localStorage.getItem('brand')
+            if (localStorageCurrentBrand) {
+                this.setBrand(localStorageCurrentBrand)
+            } else {
+                this.$router.go({ name: 'Welcome' })
+            }
+        },
         getLang() {
             var localStorageLang = localStorage.getItem('lang')
             if (localStorageLang) {

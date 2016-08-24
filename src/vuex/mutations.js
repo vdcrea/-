@@ -6,6 +6,12 @@ export default {
         localStorage.setItem('lang', lang)
         state.settings.lang = lang
     },
+    SET_BRAND (state, brand) {
+        localStorage.setItem('brand', brand)
+        state.settings.currentBrand = brand
+    },
+
+
 
     SAVE_LOGO(state, newitem) {
         state.brand.logos.insert(newitem)
@@ -33,17 +39,20 @@ export default {
         state.brand.colors.remove(item);
     },
 
+
+
+    // save image
     SAVE_IMAGE(state, newitem) {
-        state.brand.images.insert(newitem)
+        state.images.insert(newitem)
     },
     UPDATE_IMAGE(state, newitem) {
-        var item = state.brand.images.findOne({"$loki":newitem.id});
+        var item = state.images.findOne({"$loki":newitem.id});
             item = newitem
-        state.brand.images.update(item);
+        state.images.update(item);
     },
-    REMOVE_IMAGE(state, id) { // color object in the form of { name: 'ratatosk', id: 'rata@tosk.r', age: 10320 }
-        var item = state.brand.images.findOne({"$loki":id});
-        state.brand.images.remove(item);
+    REMOVE_IMAGE(state, id) {
+        var item = state.images.findOne({"$loki":id});
+        state.images.remove(item);
     }
 
 }

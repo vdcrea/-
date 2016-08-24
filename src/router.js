@@ -7,8 +7,9 @@ Vue.use(VueRouter)
 // Components
 import Home from './components/Home'
 import Documents from './components/Documents'
-import Images from './components/Images'
+import Images from './components/images/Images'
 import Settings from './components/Settings'
+import Welcome from './components/welcome/Welcome'
 
 // Router options
 var router = new VueRouter({
@@ -21,16 +22,18 @@ var router = new VueRouter({
 router.map({
 	'/': {
 		name: 'Documents',
-		component: Documents
+		component: Documents,
+        brand: true
     },
-    // '/images/:page': {
-	// 	name: 'Images',
-	// 	component: Images
-    // },
+	'/welcome': {
+		name: 'Welcome',
+		component: Welcome
+    },
     '/images': {
     	name: 'Images',
-    	component: Images
-    },    
+    	component: Images,
+        brand: true
+    },
     '/settings': {
 		name: 'Settings',
 		component: Settings
@@ -38,6 +41,14 @@ router.map({
     '*': {
         component: Documents
     }
+})
+
+router.beforeEach(function (transition) {
+	if (transition.to.brand && !store.state.settings.currentBrand) {
+		transition.redirect('/welcome')
+	} else {
+		transition.next()
+	}
 })
 
 export default router

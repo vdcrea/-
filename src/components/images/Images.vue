@@ -28,7 +28,8 @@
             <div class="wall">
                 <div v-for="image in images"
                     class="brick">
-                    <div class="card">
+                    <image-card :image="image"></image-card>
+                    <!-- <div class="card">
                         <a class="delete-image"
                             @click.prevent="removeImageItem(image.$loki)">
                             &#215;
@@ -48,7 +49,7 @@
                                 </small>
                             </div>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
             </div>
         </div>
@@ -64,17 +65,18 @@
 </template>
 
 <script>
+// libs
 import W from 'freewall'
 import Jimp from 'jimp'
-
+// store
 import {
     saveImageItem,
     updateImageItem,
     removeImageItem
-} from '../vuex/actions'
-
-import mixinDateFormat from '../mixins/dateFormat'
-import mixinPagination from '../mixins/pagination'
+} from '../../vuex/actions'
+// mixins & components
+import mixinPagination from '../../mixins/pagination'
+import imageCard from './imageCard'
 
 export default {
     data: function () {
@@ -91,7 +93,7 @@ export default {
     },
     vuex: {
         getters: {
-            lokiImages: state => state.brand.images
+            lokiImages: state => state.images
         },
         actions: {
             saveImageItem: saveImageItem,
@@ -100,7 +102,6 @@ export default {
         }
     },
     mixins: [
-        mixinDateFormat,
         mixinPagination
     ],
     computed: {
@@ -128,6 +129,14 @@ export default {
                 .limit(this.pagination.entriesPerPage)
                 .data()
             return images
+        }
+    },
+    components: {
+        imageCard
+    },
+    events: {
+        'delete-image': function (lokiId) {
+            this.removeImageItem(lokiId)
         }
     },
     methods: {
@@ -209,7 +218,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "../assets/variables";
 
 .dragged {
     background: #e5e5e5;
@@ -227,80 +235,6 @@ export default {
         }
         .button {
             vertical-align: middle;
-        }
-    }
-    .card {
-        width: auto;
-        .card-image {
-            a {
-                display: block;
-                position: relative;
-                background: #000;
-                color: #fff;
-                line-height: 0;
-                img {
-                    transition: all .2s ease-in-out;
-                }
-                &:after {
-                    display: none;
-                    font-family: 'brandguidelight';
-                    content: '\e802';
-                    position: absolute;
-                    left: 50%;
-                    top:50%;
-                    margin-left: -32px;
-                    margin-top: -32px;
-                    width: 64px;
-                    font-size: 2em;
-                    height: 64px;
-                    line-height: 64px;
-                    text-align: center;
-                    transition: all .2s ease-in-out;
-                }
-                &:hover {
-                    &:after {
-                        color: $blue;
-                    }
-                }
-            }
-        }
-        .delete-image {
-            display: block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            border-radius: 15px;
-            background: white;
-            opacity: 0;
-            position: absolute;
-            top: -10px;
-            right: -10px;
-            z-index: 10;
-            text-align: center;
-            box-shadow: 0 2px 3px rgba(17, 17, 17, 0.1), 0 0 0 1px rgba(17, 17, 17, 0.1);
-            &:hover {
-                background: $blue;
-                color: white;
-            }
-        }
-        &:hover {
-            .card-image {
-                a {
-                    img {
-                        opacity: .5;
-                    }
-                    &:after {
-                        display: block;
-                    }
-                }
-            }
-            .delete-image {
-                opacity: 1
-            }
-        }
-        .icon {
-            vertical-align:baseline;
-            margin-right: 3px;
         }
     }
 }
