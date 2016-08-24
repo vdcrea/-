@@ -18,6 +18,7 @@ export default {
     "images": {
         "addNewImages": "Ajouter des images",
         "testFile": " : cette image est déjà enregistrée",
+        "notImg": " : ce fichier n'est pas une image",
         "dropFiles": "ou glisser les dans le navigateur"
     },
     "settings": {

@@ -173,32 +173,41 @@ export default {
             this.dragged = false
             var queue = this.queue
             var messages = this.messages
-            var errorMsg = this.$t('images.testFile', this.$store.state.settings.lang)
+            var errorMsg1 = this.$t('images.testFile', this.$store.state.settings.lang)
+            var errorMsg2 = this.$t('images.notImg', this.$store.state.settings.lang)
 
             var files = [].slice.call(event.target.files || event.dataTransfer.files)
                 files.forEach(function (file) {
                     var filename = file.name
-                    if (!test(filename)) {
+                    var mimetype = file.type
+                    var filetype = mimetype.split('/')[1]
+
+                    var authorizedFormats = ['jpg', 'png', 'jpeg']
+                    var allowedFormat = authorizedFormats.indexOf(filetype) > -1
+
+                    if (!test(filename) && allowedFormat) {
                         queue.push(filename)
                         var reader = new FileReader()
                         reader.onload = function(event) {
                             fileLoaded(filename, event.currentTarget.result);
                         }
                         reader.readAsDataURL(file)
+                    } else if (!allowedFormat) {
+                        var message = {
+                            'message': filename + errorMsg2,
+                            'class': 'is-danger'
+                        }
+                        messages.push(message)
                     } else {
                         var message = {
-                            'message': filename + errorMsg,
+                            'message': filename + errorMsg1,
                             'class': 'is-danger'
                         }
                         messages.push(message)
                     }
                 })
             function fileLoaded(filename, dataUri) {
-                if(/^data:image/.test(dataUri)) {
-                    resize(filename, dataUri, save)
-                } else {
-                    console.log("this is not an image");
-                }
+                resize(filename, dataUri, save)
             }
         },
         readFile(filename, dataUri, save) {

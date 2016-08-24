@@ -18,6 +18,7 @@ export default {
     "images": {
         "addNewImages": "Add new images",
         "testFile": ": this picture is already saved",
+        "notImg": ": this file is not a picture",
         "dropFiles": "or drop files in the browser"
     },
     "settings": {
