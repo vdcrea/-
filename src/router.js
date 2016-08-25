@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 
 // Components
 import Home from './components/Home'
+import Edit from './components/Edit'
 import Documents from './components/Documents'
 import Images from './components/images/Images'
 import Settings from './components/Settings'
@@ -22,9 +23,14 @@ var router = new VueRouter({
 router.map({
 	'/': {
 		name: 'Documents',
-		component: Documents,
-        brand: true
+		component: Documents
+		//,
+        //brand: true
     },
+	'/edit/:doc': {
+		name: 'Edit',
+		component: Edit
+	},
 	'/welcome': {
 		name: 'Welcome',
 		component: Welcome

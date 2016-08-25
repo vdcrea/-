@@ -14,7 +14,7 @@
                 <small>
                     <span class="icon is-small">
                         <i class="fa icon-picture"></i>
-                    </span> <span v-text="image.file"></span><br/>
+                    </span> <span v-text="image.name"></span><br/>
                     <span class="icon is-small">
                         <i class="fa icon-calendar"></i>
                     </span> <span v-text="dateFormat(image.meta.created)"></span>
@@ -24,9 +24,13 @@
         <footer class="card-footer">
             <a class="card-footer-item"
                 :href="image.data"
-                target="_blank">Download</a>
+                target="_blank">
+                {{ 'ui.download' | translate }}
+            </a>
             <a class="card-footer-item"
-                @click.prevent="delete(image.file)">Delete</a>
+                @click.prevent="delete(image.$loki)">
+                {{ 'ui.delete' | translate }}
+            </a>
         </footer>
     </div>
 </template>
@@ -41,8 +45,8 @@ export default {
         mixinDateFormat
     ],
     methods: {
-        delete(file) {
-            this.$dispatch('delete-image', file)
+        delete(id) {
+            this.$dispatch('delete-image', id)
         }
     }
 }
@@ -120,7 +124,7 @@ export default {
     //     }
     // }
     .icon {
-        vertical-align:baseline;
+        vertical-align: baseline;
         margin-right: 3px;
     }
 }

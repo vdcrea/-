@@ -63,6 +63,7 @@ export default {
 
 <style lang="scss">
 @import 'assets/bulma';
+@import 'assets/forms';
 @import 'assets/icons/fontello/css/brandguidelight';
 
 html {
@@ -109,6 +110,9 @@ pre {
         padding: 10px 0 0 0;
     }
 }
+.nomargin {
+    margin: 0 !important;
+}
 
 .brick {
     width: 200px;
@@ -127,7 +131,7 @@ pre {
     }
     &-enter, &-leave {
         opacity: 0;
-        transform: translateY(100px);
+//        transform: translateY(100px);
     }
 }
 

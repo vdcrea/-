@@ -2,7 +2,17 @@ export const setUser = makeAction('SET_USER')
 export const setLang = makeAction('SET_LANG')
 export const setBrand = makeAction('SET_BRAND')
 
+export const saveDoc = makeAction('SAVE_DOC')
+export const updateDoc = makeAction('UPDATE_DOC')
+export const deleteDoc = makeAction('DELETE_DOC')
+
+
+
 // brand actions
+export const saveBrandItem = makeAction('SAVE_BRAND')
+export const updateBrandItem = makeAction('UPDATE_BRAND')
+export const removeBrandItem = makeAction('REMOVE_BRAND')
+
 export const saveLogoItem = makeAction('SAVE_LOGO')
 export const updateLogoItem = makeAction('UPDATE_LOGO')
 export const removeLogoItem = makeAction('REMOVE_LOGO')

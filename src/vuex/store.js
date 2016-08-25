@@ -18,10 +18,15 @@ const state = {
             { value: 'fr', text: 'Français' }
         ],
     },
-    // persistant collections
-    logos: {},
-    colors: {},
-    images: {}
+    user: {
+        brands: {},
+        docs: {}
+    },
+    brand: {
+        logos: {},
+        colors: {},
+        images: {}
+    }
 }
 
 const store = new Vuex.Store({
@@ -36,35 +41,46 @@ var db = new loki('miniscrib',{
     autoload: true,
     autoloadCallback : loadHandler,
     autosave: true,
-    autosaveInterval: 10000,
+    autosaveInterval: 3000,
     adapter: idbAdapter
 })
 function loadHandler () {
     // get collections
+    var brands = db.getCollection('brands');
+    var docs = db.getCollection('docs');
     var logos = db.getCollection('logos');
     var colors = db.getCollection('colors');
     var images = db.getCollection('images');
-    // if collections doesn't exist, create it
+    // if collections doesn't exist, create them
+    if (brands === null) {
+        logos = db.addCollection('brands');
+    }
+    if (docs === null) {
+        docs = db.addCollection('docs');
+    }
     if (logos === null) {
         logos = db.addCollection('logos', {
             unique: ['name']
         });
-    }
-    if (colors === null) {
-        colors = db.addCollection('colors');
     }
     if (images === null) {
         images = db.addCollection('images', {
             unique: ['name']
         });
     }
+    if (colors === null) {
+        colors = db.addCollection('colors');
+    }
     // add collections to the state
-    state.colors = colors
-    state.images = images
+    state.user.brands = brands
+    state.user.docs = docs
+    state.brand.logos = logos
+    state.brand.images = images
+    state.brand.colors = colors
     state.dbLoaded = true
 
     // debug: reset database at every reload
-    // images.removeDataOnly()
+    // docs.removeDataOnly()
 }
 window.onbeforeunload = function() {
     db.close()

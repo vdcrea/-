@@ -12,19 +12,24 @@ export default {
     },
 
 
-
-    SAVE_LOGO(state, newitem) {
-        state.brand.logos.insert(newitem)
+    SAVE_DOC(state, newitem) {
+        state.user.docs.insert(newitem)
     },
-    UPDATE_LOGO(state, newitem) {
-        var item = state.brand.logos.findOne({"id":newitem.id});
+    UPDATE_DOC(state, newitem) {
+        var item = state.user.docs.find({'$loki': newitem.$loki});
             item = newitem
-        state.brand.logos.update(item);
+        state.user.docs.update(item);
     },
-    REMOVE_LOGO(state, id) { // color object in the form of { name: 'ratatosk', id: 'rata@tosk.r', age: 10320 }
-        var item = state.brand.logos.findOne({"id":id});
-        state.brand.logos.remove(item);
+    DELETE_DOC(state, id) {
+        var item = state.user.docs.find({'$loki': id})
+        state.user.docs.remove(item);
     },
+
+
+
+
+
+
 
 
     SAVE_COLOR(state, newitem) {
@@ -41,19 +46,46 @@ export default {
     },
 
 
+    // brands
+    SAVE_BRAND(state, newitem) {
+        state.user.brands.insert(newitem)
+    },
+    UPDATE_BRAND(state, newitem) {
+        var item = state.user.brands.findOne({"id":newitem.id});
+            item = newitem
+        state.user.brands.update(item);
+    },
+    REMOVE_BRAND(state, id) { // color object in the form of { name: 'ratatosk', id: 'rata@tosk.r', age: 10320 }
+        var item = state.user.brands.findOne({"id":id});
+        state.user.brands.remove(item);
+    },
 
-    // save image
+    // logos
+    SAVE_LOGO(state, newitem) {
+        state.brand.logos.insert(newitem)
+    },
+    UPDATE_LOGO(state, newitem) {
+        var item = state.brand.logos.find({"$loki":newitem.$loki});
+            item = newitem
+        state.brand.logos.update(item);
+    },
+    REMOVE_LOGO(state, name) {
+        var item = state.brand.logos.find({'name': name});
+        state.brand.logos.remove(item);
+    },
+
+    // images
     SAVE_IMAGE(state, newitem) {
-        state.images.insert(newitem)
+        state.brand.images.insert(newitem)
     },
     UPDATE_IMAGE(state, newitem) {
-        var item = state.images.findOne({"$loki":newitem.id});
+        var item = state.brand.images.find({'$loki': newitem.$loki});
             item = newitem
-        state.images.update(item);
+        state.brand.images.update(item);
     },
-    REMOVE_IMAGE(state, file) {
-        var item = state.images.find({'file': file})
-        state.images.remove(item);
+    REMOVE_IMAGE(state, id) {
+        var item = state.brand.images.find({'$loki': id})
+        state.brand.images.remove(item);
     }
 
 }

@@ -24,6 +24,11 @@
                 @click="closeMenu()">
                 {{ 'nav.documents' | translate }}
             </a>
+            <a  class="nav-item is-tab"
+                v-link="{ name: 'Edit', params: { 'doc': 'new' } }"
+                @click="closeMenu()">
+                Create new
+            </a>
             <!-- <a  class="nav-item is-tab"
                 v-link="{ name: 'Images', params: { page: 1 } }"
                 @click="closeMenu()">
@@ -75,7 +80,7 @@ export default {
     left: 0;
     right: 0;
     height: 50px;
-
+    z-index: 100;
     .is-tab {
         position: relative;
         border: 0;

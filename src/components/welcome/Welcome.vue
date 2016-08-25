@@ -37,7 +37,7 @@
                         <input type="file"
                             name="brandlogo[]"
                             id="brandlogo"
-                            @change="selectFile($event, readFile, saveFile)" />
+                            @change="selectFile($event, testFile, readFile, saveFile)" />
                         <label for="brandlogo"
                             class="button is-primary is-fullwidth"
                             :class="{ 'is-disabled': apiCall, 'is-loading': apiCall }">
@@ -62,6 +62,10 @@
                     <span v-text="alert.message"></span>
                 </div>
 
+                <pre>
+                    {{brand|json}}
+                </pre>
+
             </div>
         </div>
     </div>
@@ -84,6 +88,7 @@ export default {
             messages: [],
             brand: {
                 name: '',
+                id: 0,
                 logo: 0,
                 description: ''
             }
@@ -91,10 +96,24 @@ export default {
     },
     computed: {
     },
+    vuex: {
+        getters: {
+            lokiLogos: state => state.brand.logos
+        },
+        actions: {
+            saveLogoItem: saveLogoItem,
+            updateLogoItem: updateLogoItem,
+            removeLogoItem: removeLogoItem
+        }
+    },
     methods: {
         closeAlert(i) {
-            this.res.messages.splice(i,1);
+            this.messages.splice(i,1);
         },
+
+
+
+
         setNewBrand(nextStep) {
             localStorage.setItem('newBrand', JSON.stringify(this.brand))
             this.step = nextStep
@@ -119,27 +138,52 @@ export default {
                 }
             }
         },
-        selectFile(event, read, save) {
+        testFile(name) {
+            var logo = this.lokiLogos.findOne({'name': name})
+            if (logo) {
+                return logo.$loki
+            } else {
+                return false
+            }
+        },
+        selectFile(event, test, read, save) {
+            console.log("selected file");
             event.preventDefault()
+            var messages = this.messages
+            var errorMsgFileFormat = this.$t('images.notFormat', this.$store.state.settings.lang)
+            var errorMsgFileExists = this.$t('images.testFile', this.$store.state.settings.lang)
+
             var logo = event.target.files[0] || event.dataTransfer.files.files[0];
             var filename = logo.name
-            this.processingLogo = filename
+            var mimetype = logo.type
+            var filetype = mimetype.split('/')[1]
 
-            var reader = new FileReader()
-                reader.onload = function(event) {
-                    fileLoaded(filename, event.currentTarget.result);
-                }
-                reader.readAsDataURL(logo)
+            var authorizedFormats = ['jpg', 'png', 'jpeg']
+            var allowedFormat = authorizedFormats.indexOf(filetype) > -1
 
-            function fileLoaded(filename, dataUri) {
-                if(/^data:image/.test(dataUri)) {
-                    read(filename, dataUri, save)
-                } else {
-                    console.log("this is not an image");
+            if (!test(filename) && allowedFormat) {
+                this.processingLogo = filename
+                var reader = new FileReader()
+                    reader.onload = function(event) {
+                        read(filename, event.currentTarget.result, save);
+                    }
+                    reader.readAsDataURL(logo)
+            } else if (!allowedFormat) {
+                var message = {
+                    'message': filename + errorMsgFileFormat,
+                    'class': 'is-danger'
                 }
+                messages.push(message)
+            } else {
+                var message = {
+                    'message': filename + errorMsgFileExists,
+                    'class': 'is-danger'
+                }
+                messages.push(message)
             }
         },
         readFile(filename, dataUri, save) {
+            console.log("reading file");
             var mimeType = dataUri.split(",")[0].split(":")[1].split(";")[0]
             var data = dataUri.replace(/^data:image\/\w+;base64,/, "")
             var imgBuffer = new Buffer(data,'base64')
@@ -154,10 +198,12 @@ export default {
                 });
         },
         saveFile(filename, dataUri) {
+            console.log("saving file");
             this.processingLogo = ''
             var logo = {"name": filename, "data": dataUri}
             this.saveLogoItem(logo)
-        }
+            this.brand.logo = this.testFile(filename)
+        },
     },
     created() {
         this.getNewBrand()

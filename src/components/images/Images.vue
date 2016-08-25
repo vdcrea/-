@@ -104,7 +104,7 @@ export default {
     },
     vuex: {
         getters: {
-            lokiImages: state => state.images
+            lokiImages: state => state.brand.images
         },
         actions: {
             saveImageItem: saveImageItem,
@@ -146,8 +146,8 @@ export default {
         imageCard
     },
     events: {
-        'delete-image': function (file) {
-            this.removeImageItem(file)
+        'delete-image': function (id) {
+            this.removeImageItem(id)
         }
     },
     methods: {
@@ -160,21 +160,21 @@ export default {
         dragEnd() {
             this.dragged = false
         },
-        testFile(file) {
-            var image = this.lokiImages.findOne({'file': file})
+        testFile(name) {
+            var image = this.lokiImages.findOne({'name': name})
             if (image) {
                 return true
             } else {
                 return false
             }
         },
-        dropFile(event, test, resize, save) {
+        dropFile(event, test, read, save) {
             event.preventDefault()
             this.dragged = false
             var queue = this.queue
             var messages = this.messages
-            var errorMsg1 = this.$t('images.testFile', this.$store.state.settings.lang)
-            var errorMsg2 = this.$t('images.notImg', this.$store.state.settings.lang)
+            var errorMsgFileFormat = this.$t('images.notFormat', this.$store.state.settings.lang)
+            var errorMsgFileExists = this.$t('images.testFile', this.$store.state.settings.lang)
 
             var files = [].slice.call(event.target.files || event.dataTransfer.files)
                 files.forEach(function (file) {
@@ -189,36 +189,32 @@ export default {
                         queue.push(filename)
                         var reader = new FileReader()
                         reader.onload = function(event) {
-                            fileLoaded(filename, event.currentTarget.result);
+                            read(filename, mimetype, event.currentTarget.result, save);
                         }
                         reader.readAsDataURL(file)
                     } else if (!allowedFormat) {
                         var message = {
-                            'message': filename + errorMsg2,
+                            'message': filename + errorMsgFileFormat,
                             'class': 'is-danger'
                         }
                         messages.push(message)
                     } else {
                         var message = {
-                            'message': filename + errorMsg1,
+                            'message': filename + errorMsgFileExists,
                             'class': 'is-danger'
                         }
                         messages.push(message)
                     }
                 })
-            function fileLoaded(filename, dataUri) {
-                resize(filename, dataUri, save)
-            }
         },
-        readFile(filename, dataUri, save) {
-            var mimeType = dataUri.split(",")[0].split(":")[1].split(";")[0]
+        readFile(filename, mimetype, dataUri, save) {
             var data = dataUri.replace(/^data:image\/\w+;base64,/, "")
             var imgBuffer = new Buffer(data,'base64')
 
             Jimp.read(imgBuffer, function (err, image) {
                 image.scaleToFit(1480,1480)
                     .quality(80)
-                    .getBase64(mimeType, function (err, dataUri) {
+                    .getBase64(mimetype, function (err, dataUri) {
                         save(filename, dataUri)
                     });
                 }).catch(function (err) {
@@ -228,7 +224,7 @@ export default {
         saveFile(filename, dataUri) {
             this.queue = _.without(this.queue, filename)
             this.pagination.currentPage = 1
-            var image = {"file": filename, "data": dataUri}
+            var image = {"name": filename, "data": dataUri}
             this.saveImageItem(image)
         },
         initGrid() {

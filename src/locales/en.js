@@ -2,6 +2,19 @@ export default {
     "scrib": {
         "tagLine": "Unleash your brand materials"
     },
+    "doc": {
+        "untitled": "Untitled document",
+        "addImage": "Select an image or drop it in the browser",
+        "imgDragged": "Drop image here to save",
+        "imgProcessed": "Saving image, please wait",
+        "title": "Title",
+        "subtitle": "Subtitle",
+        "header": "Header",
+        "text": "Text",
+        "aside": "Side text",
+        "footer": "Footer"
+    },
+
     "welcome": {
         "yourBrand": "Your brand's name",
         "next": "Next",
@@ -18,10 +31,14 @@ export default {
     "images": {
         "addNewImages": "Add new images",
         "testFile": ": this picture is already saved",
-        "notImg": ": this file is not a picture",
+        "notFormat": ": this file format is not handled",
         "dropFiles": "or drop files in the browser"
     },
     "settings": {
         "language": "Language"
+    },
+    "ui": {
+        "delete": "Delete",
+        "download": "Download"
     }
 }
