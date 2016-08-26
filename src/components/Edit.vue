@@ -51,8 +51,8 @@
                     @dragend.prevent="dragEnd"
                     @dragleave.prevent="dragEnd"
                     @drop="selectFile($event, readFile, saveFile)"
-                    :class="{ 'has-image' : doc.img, 'is-processing': processingImage }">
-                        <img v-if="doc.img" :src="doc.img.dataUri" alt="" />
+                    :class="{ 'has-image' : doc.img.dataUri, 'is-processing': processingImage }">
+                        <img v-if="doc.img.dataUri" :src="previewImage" alt="" />
                         <span class="dropzone-label"
                             v-text="dropzoneLabel">
                         </span>
@@ -127,8 +127,12 @@
 
 
     <div class="bgsvg">
-        <svg viewBox="0 0 600 200" width="100%" height="100%" preserveAspectRatio="xMidYMid slice">
-            <image x="0" y="0" width="600" height="200"
+        <svg width="100%" height="100%"
+            :viewBox="viewBox"
+            preserveAspectRatio="xMidYMid slice">
+            <image x="0" y="0"
+                :width="doc.img.width"
+                :height="doc.img.height"
                 filter = "url(#blur)"
                 opacity=".4"
                 v-bind="{'xlink:href': backgroundSvg}" />
@@ -156,6 +160,12 @@ export default {
             dragged: false,
             processingImage: false,
             messages: [],
+            template: {
+                img: {
+                    width: 600,
+                    height: 200
+                }
+            },
             doc: {
                 title: '',
                 subtitle: '',
@@ -165,7 +175,9 @@ export default {
                 aside: '',
                 img: {
                     name: '',
-                    dataUri: ''
+                    dataUri: '',
+                    width: 0,
+                    height: 0
                 }
             }
         }
@@ -181,12 +193,30 @@ export default {
         }
     },
     computed: {
-        backgroundImage() {
+        previewImage(){
             if (this.doc.img.dataUri) {
-                return 'url(' + this.doc.img.dataUri + ')'
+                var dataUri = this.doc.img.dataUri
+                var mimeType = dataUri.split(',')[0].split(':')[1].split(';')[0]
+                var data = dataUri.replace(/^data:image\/\w+;base64,/, '')
+                var imgBuffer = new Buffer(data,'base64')
+                var width = this.template.img.width
+                var height = this.template.img.height
+                var imgResized = ''
+                Jimp.read(imgBuffer, function (err, image) {
+                    image.cover(width,height)
+                        .getBase64(mimeType, function (err, dataUri) {
+                            imgResized = dataUri
+                        });
+                    }).catch(function (err) {
+                        console.error(err);
+                    });
+                return imgResized
             } else {
                 return ''
             }
+        },
+        viewBox(){
+            return '0 0 ' + this.doc.img.width + ' ' + this.doc.img.height
         },
         backgroundSvg() {
             if (this.doc.img.dataUri) {
@@ -219,7 +249,9 @@ export default {
                     aside: '',
                     img: {
                         name: '',
-                        dataUri: ''
+                        dataUri: '',
+                        width: 0,
+                        height: 0
                     }
                 }
             }
@@ -265,12 +297,10 @@ export default {
         getDoc(id) {
             var doc = this.lokiDocs.find({'$loki': id})
             if (doc) {
-                console.log("doc found")
                 this.doc = doc[0]
             }
         },
         selectFile(event, read, save) {
-            console.log("selected file");
             event.preventDefault()
             this.dragged = false
 
@@ -310,24 +340,23 @@ export default {
             }
         },
         readFile(filename, dataUri, save) {
-            console.log("reading file");
             var mimeType = dataUri.split(",")[0].split(":")[1].split(";")[0]
             var data = dataUri.replace(/^data:image\/\w+;base64,/, "")
             var imgBuffer = new Buffer(data,'base64')
             Jimp.read(imgBuffer, function (err, image) {
-                image.cover(600,200)
-                    .quality(80)
-                    .getBase64(mimeType, function (err, dataUri) {
-                        save(filename, dataUri)
+                image.scaleToFit(1280,1280).quality(80)
+                var width = image.bitmap.width
+                var height = image.bitmap.height
+                image.getBase64(mimeType, function (err, dataUri) {
+                        save(filename, dataUri, width, height)
                     });
                 }).catch(function (err) {
                     console.error(err);
                 });
         },
-        saveFile(filename, dataUri) {
-            console.log("saving file");
+        saveFile(filename, dataUri, width, height) {
             this.processingImage = false
-            this.doc.img = {"name": filename, "dataUri": dataUri}
+            this.doc.img = {"name": filename, "dataUri": dataUri, "width": width, "height": height}
             this.save()
         }
     },
@@ -369,7 +398,7 @@ export default {
     .dropzone {
         display: block;
         position: relative;
-        margin-top: 20px;
+        margin-top: 10px;
         min-height: 100px;
         text-align: center;
         border: 1px dotted #ccc;

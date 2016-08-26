@@ -80,7 +80,7 @@ function loadHandler () {
     state.dbLoaded = true
 
     // debug: reset database at every reload
-    // docs.removeDataOnly()
+    //docs.removeDataOnly()
 }
 window.onbeforeunload = function() {
     db.close()
