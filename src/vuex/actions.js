@@ -6,6 +6,9 @@ export const saveDoc = makeAction('SAVE_DOC')
 export const updateDoc = makeAction('UPDATE_DOC')
 export const deleteDoc = makeAction('DELETE_DOC')
 
+export const saveTemplate = makeAction('SAVE_TEMPLATE')
+export const updateTemplate = makeAction('UPDATE_TEMPLATE')
+export const deleteTemplate = makeAction('DELETE_TEMPLATE')
 
 
 // brand actions

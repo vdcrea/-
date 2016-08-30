@@ -29,11 +29,16 @@
                 @click="closeMenu()">
                 Create new
             </a>
-            <!-- <a  class="nav-item is-tab"
-                v-link="{ name: 'Images', params: { page: 1 } }"
+            <a  class="nav-item is-tab"
+                v-link="{ name: 'Templates' }"
                 @click="closeMenu()">
-                {{ 'nav.images' | translate }}
-            </a> -->
+                {{ 'nav.templates' | translate }}
+            </a>
+            <a  class="nav-item is-tab"
+                v-link="{ name: 'Edit Template', params: { 'template': 'new' } }"
+                @click="closeMenu()">
+                Create new template
+            </a>
             <a  class="nav-item is-tab"
                 v-link="{ name: 'Images' }"
                 @click="closeMenu()">

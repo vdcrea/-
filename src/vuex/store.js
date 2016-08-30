@@ -20,7 +20,8 @@ const state = {
     },
     user: {
         brands: {},
-        docs: {}
+        docs: {},
+        templates: {}
     },
     brand: {
         logos: {},
@@ -48,6 +49,7 @@ function loadHandler () {
     // get collections
     var brands = db.getCollection('brands');
     var docs = db.getCollection('docs');
+    var templates = db.getCollection('templates');
     var logos = db.getCollection('logos');
     var colors = db.getCollection('colors');
     var images = db.getCollection('images');
@@ -57,6 +59,9 @@ function loadHandler () {
     }
     if (docs === null) {
         docs = db.addCollection('docs');
+    }
+    if (templates === null) {
+        templates = db.addCollection('templates');
     }
     if (logos === null) {
         logos = db.addCollection('logos', {
@@ -74,6 +79,8 @@ function loadHandler () {
     // add collections to the state
     state.user.brands = brands
     state.user.docs = docs
+    state.user.templates = templates
+
     state.brand.logos = logos
     state.brand.images = images
     state.brand.colors = colors

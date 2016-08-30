@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import VueResource from 'vue-resource'
 import VueI18n from 'vue-i18n'
 import _ from 'lodash'
 
@@ -8,6 +9,10 @@ import store from './vuex/store'
 import Locales from './locales'
 
 import App from './App'
+
+// Vue resource
+Vue.use(VueResource)
+Vue.http.options.emulateJSON = true
 
 // Vue i18n
 Vue.use(VueI18n)

@@ -25,6 +25,18 @@ export default {
         state.user.docs.remove(item);
     },
 
+    SAVE_TEMPLATE(state, newitem) {
+        state.user.templates.insert(newitem)
+    },
+    UPDATE_TEMPLATE(state, newitem) {
+        var item = state.user.templates.find({'$loki': newitem.$loki});
+            item = newitem
+        state.user.templates.update(item);
+    },
+    DELETE_TEMPLATE(state, id) {
+        var item = state.user.templates.find({'$loki': id})
+        state.user.templates.remove(item);
+    },
 
 
 

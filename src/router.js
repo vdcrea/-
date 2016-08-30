@@ -9,6 +9,8 @@ import Home from './components/Home'
 import Edit from './components/Edit'
 import Documents from './components/Documents'
 import Images from './components/images/Images'
+import Templates from './components/Templates'
+import EditTemplate from './components/EditTemplate'
 import Settings from './components/Settings'
 import Welcome from './components/welcome/Welcome'
 
@@ -31,6 +33,14 @@ router.map({
 		name: 'Edit',
 		component: Edit
 	},
+	'/templates': {
+		name: 'Templates',
+		component: Templates
+    },
+	'/template/:template': {
+		name: 'Edit Template',
+		component: EditTemplate
+    },
 	'/welcome': {
 		name: 'Welcome',
 		component: Welcome

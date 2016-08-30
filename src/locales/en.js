@@ -26,7 +26,8 @@ export default {
     "nav": {
         "documents": "Documents",
         "images": "Images",
-        "settings": "Settings"
+        "settings": "Settings",
+        "templates": "Templates"
     },
     "images": {
         "addNewImages": "Add new images",

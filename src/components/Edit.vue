@@ -47,6 +47,7 @@
                     @change="selectFile($event, readFile, saveFile)"/>
                 <label for="files"
                     class="dropzone"
+                    id="dropzone"
                     @dragover.prevent="dragStart"
                     @dragend.prevent="dragEnd"
                     @dragleave.prevent="dragEnd"
@@ -115,9 +116,9 @@
             </div>
         </div>
 
-    <!-- <pre>
+    <pre>
         {{doc|json}}
-    </pre> -->
+    </pre>
     <!-- <pre>
         {{lokiDocs|json}}
     </pre> -->
@@ -147,6 +148,7 @@
 
 <script>
 import Jimp from 'jimp'
+import himalaya from 'himalaya'
 
 import {
     saveDoc,
@@ -251,7 +253,8 @@ export default {
                         name: '',
                         dataUri: '',
                         width: 0,
-                        height: 0
+                        height: 0,
+                        table: ''
                     }
                 }
             }
@@ -357,10 +360,57 @@ export default {
         saveFile(filename, dataUri, width, height) {
             this.processingImage = false
             this.doc.img = {"name": filename, "dataUri": dataUri, "width": width, "height": height}
+            this.tableImage()
             this.save()
+        },
+        tableImage(){
+            var width = this.template.img.width || 600
+            var height = this.template.img.height || 200
+
+            var dataUri = this.doc.img.dataUri
+            var mimeType = dataUri.split(',')[0].split(':')[1].split(';')[0]
+            var data = dataUri.replace(/^data:image\/\w+;base64,/, '')
+            var imgBuffer = new Buffer(data,'base64')
+            var dropZone = document.getElementById('dropzone')
+
+            var tableImg = document.createElement("table")
+                tableImg.setAttribute('width', width)
+                tableImg.setAttribute('height', height)
+                tableImg.setAttribute('align', 'middle')
+                tableImg.setAttribute('border', '0')
+                tableImg.setAttribute('cellpadding', '0')
+                tableImg.setAttribute('cellspacing', '0')
+                tableImg.style.fontSize = 1;
+                tableImg.style.lineHeight = 1;
+            for (var i = 0; i < height; i++) {
+                var tr = tableImg.insertRow()
+                for (var j = 0; j < width; j++) {
+                    if(i == height && j == width){
+                        break;
+                    } else {
+                        var td = tr.insertCell();
+                            //td.setAttribute('bgcolor', '#ccc')
+                            td.setAttribute('width', '1')
+                            td.setAttribute('height', '1')
+                    }
+                }
+            }
+            var td = tableImg.getElementsByTagName('td')
+
+            Jimp.read(imgBuffer, function (err, image) {
+                image.cover(width,height)
+                    .scan(0, 0, width, height, function (x, y, idx) {
+                        var cellColor = "rgba(" + this.bitmap.data[ idx + 0 ] + "," + this.bitmap.data[ idx + 1 ] + "," + this.bitmap.data[ idx + 2 ] + "," + this.bitmap.data[ idx + 3 ] + ")"
+                        var cell = tableImg.rows[y].cells[x]
+                            cell.setAttribute('bgcolor', cellColor)
+                            cell.style.background = cellColor
+                    });
+                }).catch(function (err) {
+                    console.error(err);
+                });
+            dropZone.appendChild(tableImg)
         }
     },
-    components: {},
     ready() {
         this.resizeTextareas()
         window.addEventListener('resize', this.resizeTextareas)
@@ -405,6 +455,9 @@ export default {
         transition: all .2s ease-in-out;
         color: #999;
         background: #f5f7fa;
+        table {
+            z-index: 2;
+        }
         img {
             width: 100%;
             height: auto;
@@ -445,6 +498,9 @@ export default {
                     display: block;
                     color: #333;
                 }
+                table {
+                    opacity: .2;
+                }
                 img {
                     opacity: .2;
                 }
@@ -460,6 +516,9 @@ export default {
                 z-index: 3;
                 display: block;
             }
+            table {
+                opacity: .2;
+            }
             img {
                 opacity: .2;
             }
@@ -467,6 +526,9 @@ export default {
         &:hover {
             color: $blue;
             border-color: $blue;
+            table {
+                opacity: .2;
+            }
             img {
                 opacity: .2;
             }

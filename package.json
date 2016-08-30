@@ -26,7 +26,9 @@
     "moment": "^2.14.1",
     "svg2pdf.js": "^0.11.3",
     "vue": "^1.0.21",
+    "vue-ace-editor": "^1.0.2",
     "vue-i18n": "^4.2.2",
+    "vue-resource": "^0.9.3",
     "vue-router": "^0.7.13"
   },
   "devDependencies": {

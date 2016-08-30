@@ -1,32 +1,24 @@
 <template>
-    <div class="documents padding">
+    <div class="templates padding">
         <div class="wall">
-            <div v-for="doc in docs"
+            <div v-for="template in templates"
                 class="brick">
                 <div class="card is-fullwidth"
-                    id="card-{{doc.id}}">
-                    {{doc.name}}
+                    id="template-{{template.id}}">
 
                     <header class="card-header">
                         <p class="card-header-title"
-                            v-text="doc.title">
+                            v-text="template.title">
                         </p>
                         <a class="card-header-icon"
-                            @click="deleteDoc(doc.$loki)">
-                            <!-- <i class="fa fa-angle-down"></i> -->
+                            @click="deleteTemplate(template.$loki)">
                             delete
                         </a>
                     </header>
 
                     <footer class="card-footer">
-                        <a class="card-footer-item">
-                            Send
-                        </a>
-                        <a class="card-footer-item">
-                            Print
-                        </a>
                         <a class="card-footer-item"
-                            v-link="{ name: 'Edit', params: { 'doc': doc.$loki } }">
+                            v-link="{ name: 'Edit Template', params: { 'template': template.$loki } }">
                             Edit
                         </a>
                     </footer>
@@ -40,6 +32,10 @@
             :total-pages="totalPages"
             :callback="setPage">
         </pagination>
+
+        <pre>
+            {{templates|json}}
+        </pre>
     </div>
 </template>
 
@@ -47,36 +43,20 @@
 import W from 'freewall'
 
 import {
-    saveDoc,
-    updateDoc,
-    deleteDoc
+    saveTemplate,
+    updateTemplate,
+    deleteTemplate
 } from '../vuex/actions'
 
 import mixinPagination from '../mixins/pagination'
 
 export default {
-    vuex: {
-        getters: {
-            lokiDocs: state => state.user.docs
-        },
-        actions: {
-            saveDoc: saveDoc,
-            updateDoc: updateDoc,
-            deleteDoc: deleteDoc
-        }
-    },
-    watch: {
-        'docs': function (val, oldVal) {
-            // console.log('new: %s, old: %s', val, oldVal)
-            this.initGrid()
-        }
-    },
     mixins: [
         mixinPagination
     ],
     computed: {
         totalEntries() {
-            return this.lokiDocs.idIndex.length
+            return this.lokiTemplates.idIndex.length
         },
         totalPages(){
             return Math.ceil(this.totalEntries/this.pagination.entriesPerPage)
@@ -84,14 +64,30 @@ export default {
         resultsOffset(){
             return (this.pagination.currentPage * this.pagination.entriesPerPage) - this.pagination.entriesPerPage
         },
-        docs(){
-            var docs = this.lokiDocs
+        templates(){
+            var templates = this.lokiTemplates
                 .chain()
                 .simplesort('$loki', true)
                 .offset(this.resultsOffset)
                 .limit(this.pagination.entriesPerPage)
                 .data()
-            return docs
+            return templates
+        }
+    },
+    watch: {
+        'templates': function (val, oldVal) {
+            // console.log('new: %s, old: %s', val, oldVal)
+            this.initGrid()
+        }
+    },
+    vuex: {
+        getters: {
+            lokiTemplates: state => state.user.templates
+        },
+        actions: {
+            saveTemplate: saveTemplate,
+            updateTemplate: updateTemplate,
+            deleteTemplate: deleteTemplate
         }
     },
     methods: {
@@ -116,8 +112,16 @@ export default {
     beforeDestroy() {
         window.removeEventListener('resize', this.initGrid)
     }
+    // ,
+    // methods: {
+    //     saveNewTemplate() {
+    //
+    //         console.log('html edited');
+    //     }
+    // }
 }
 </script>
 
-<style lang="css">
+<style lang="scss">
+
 </style>
