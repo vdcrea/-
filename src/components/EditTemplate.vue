@@ -1,5 +1,37 @@
 <template>
-    <div class="templates">
+    <div class="templates columns">
+
+        <div class="column is-6 ace">
+
+            <!-- <div class="padding mf">
+                <div class="form-group">
+                    <input :class="{ 'has-value' : template.title }"
+                        type="text"
+                        v-model="template.title"
+                        @input="save"/>
+                    <label for="input"
+                        class="control-label">
+                        {{ 'doc.title' | translate }}
+                    </label><i class="bar"></i>
+                </div>
+            </div> -->
+
+            <ace-editor v-if="editMode"
+                :content.sync="template.html"
+                lang="html"
+                theme="chrome"
+                width="100%"
+                height="100%"></ace-editor>
+        </div>
+        <div class="column is-6 reset">
+            {{{ template.html }}}
+            <pre>
+                {{hasImage}}
+            </pre>
+        </div>
+
+<!--
+
 
         <div class="column is-10-tablet is-offset-1-tablet is-8-desktop is-offset-2-desktop">
 
@@ -23,15 +55,6 @@
                     </label><i class="bar"></i>
                 </div>
 
-                <!-- <div class="form-group">
-                    <select v-model="template.type"
-                        @input="save">
-                        <option v-for="type in types">{{type}}</option>
-                    </select>
-                    <label for="select" class="control-label">Type</label>
-                    <i class="bar"></i>
-                </div> -->
-
                 <div class="ace-wrapper">
                     <ace-editor v-if="editMode"
                         :content.sync="template.html"
@@ -43,11 +66,7 @@
             </div>
         </div>
 
-        {{{ template.html }}}
-        <pre>
-            {{hasTitle|json}}
-            {{template|json}}
-        </pre>
+        {{{ template.html }}} -->
 
     </div>
 </template>
@@ -81,6 +100,9 @@ export default {
         },
         hasSubtitle() {
             return ~this.template.html.indexOf('subtitle')
+        },
+        hasImage() {
+            return ~this.template.html.indexOf('alt="image"')
         }
     },
     route: {
@@ -99,7 +121,7 @@ export default {
     },
     watch: {
         'template.html': function (val, oldVal) {
-            console.log('new: %s, old: %s', val, oldVal)
+            // console.log('new: %s, old: %s', val, oldVal)
             if (val) {
                 this.save()
             } else {
@@ -128,7 +150,6 @@ export default {
     },
     methods: {
         save(){
-            console.log('saved');
 
             if (this.hasTitle && !_.includes(this.template.fields, 'title') ) {
                 this.template.fields.push('title')
@@ -161,7 +182,21 @@ export default {
 </script>
 
 <style lang="scss">
-.ace-wrapper {
-    padding-top: 20px;
+@import "../assets/reset";
+.ace {
+    height: 40vh;
+    padding-bottom: 0 !important;
+    @media screen and (min-width: 768px) {
+        height: 100%;
+        padding-bottom: inherit !important;
+        padding-right: 0 !important;
+    }
+}
+.reset {
+    padding-top: 0 !important;
+    @media screen and (min-width: 768px) {
+        padding-left: 0 !important;
+        padding-top: inherit !important;
+    }
 }
 </style>
