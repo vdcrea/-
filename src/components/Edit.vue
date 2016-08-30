@@ -148,7 +148,7 @@
 
 <script>
 import Jimp from 'jimp'
-import himalaya from 'himalaya'
+// import himalaya from 'himalaya'
 
 import {
     saveDoc,

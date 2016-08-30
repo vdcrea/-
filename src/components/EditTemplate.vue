@@ -23,14 +23,14 @@
                     </label><i class="bar"></i>
                 </div>
 
-                <div class="form-group">
+                <!-- <div class="form-group">
                     <select v-model="template.type"
                         @input="save">
                         <option v-for="type in types">{{type}}</option>
                     </select>
                     <label for="select" class="control-label">Type</label>
                     <i class="bar"></i>
-                </div>
+                </div> -->
 
                 <div class="ace-wrapper">
                     <ace-editor v-if="editMode"
@@ -71,7 +71,6 @@ export default {
             template: {
                 title: '',
                 html: '',
-                type: 'print',
                 fields: []
             }
         }
@@ -93,7 +92,6 @@ export default {
                 this.template = {
                     title: '',
                     html: '',
-                    type: 'print',
                     fields: []
                 }
             }
